@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -41,6 +43,7 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
+	@Cacheable(value="listaDeTopicos")
 	@GetMapping
 	public Page<TopicoDto> lista(
 			@RequestParam(required = false) String nomeCurso, 
@@ -60,6 +63,7 @@ public class TopicosController {
 	
 	@PostMapping
 	@Transactional
+	@CacheEvict(value="listaDeTopicos", allEntries = true) //atualizar o cache listaDeTopicos
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
 		Topico topico = form.converter(cursoRepository);
 		topicoRepository.save(topico);
@@ -67,7 +71,7 @@ public class TopicosController {
 		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
 		return ResponseEntity.created(uri).body(new TopicoDto(topico));
 	}
-	
+	@CacheEvict(value="listaDeTopicos", allEntries = true)
 	@GetMapping("/{id}")
 	public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
 		Optional<Topico> topico = topicoRepository.findById(id);
@@ -78,6 +82,7 @@ public class TopicosController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@CacheEvict(value="listaDeTopicos", allEntries = true)
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
@@ -90,6 +95,7 @@ public class TopicosController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@CacheEvict(value="listaDeTopicos", allEntries = true)
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> remover(@PathVariable Long id) {
