@@ -43,6 +43,7 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
+	//Recurso para ganhar performance, usar em tabelas que raramente são atualizadas
 	@Cacheable(value="listaDeTopicos")
 	@GetMapping
 	public Page<TopicoDto> lista(
