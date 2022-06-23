@@ -1,0 +1,17 @@
+declarar variaveis de ambiente
+nao expor informações no properties
+
+FORUM_DATABASE_URL=jdbc:h2:mem:alura-forum	
+FORUM_DATABAS_USERNAME=sa
+FORUM_DATABAS_PASSWORD=
+FORUM_DATABAS_SECRET=123456
+java -jar -Dspring.profiles.active=prod forum.jar
+
+
+ou declarar na hora de rodar
+java -jar -Dspring.profiles.active=prod 
+-DFORUM_DATABASE_URL=jdbc:h2:mem:alura-forum	
+-DFORUM_DATABASE_USERNAME=sa
+-DFORUM_DATABASE_PASSWORD=
+-DFORUM_DATABASE_SECRET=123456
+forum.jar
